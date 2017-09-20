@@ -52,6 +52,16 @@ module Mongo
           log_retry(e)
           sleep(cluster.read_retry_interval)
           retry
+          # We might get 'not-master' errors on non sharded clusters, we treat
+          # them as a connection disconnect, and rescan the cluster. Note that
+          # we use `write_retriable?` that already matches master change errors
+          #
+          # See https://phabricator.skroutz.gr/T5023
+        elsif e.write_retryable?
+          raise(e) if attempt > cluster.max_read_retries
+          log_retry(e)
+          cluster.scan!
+          retry
         else
           raise e
         end
