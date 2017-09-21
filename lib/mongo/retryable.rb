@@ -60,6 +60,7 @@ module Mongo
         elsif e.write_retryable?
           raise(e) if attempt > cluster.max_read_retries
           log_retry(e)
+          sleep(cluster.read_retry_interval) if e.message.include?('node is recovering')
           cluster.scan!
           retry
         else
@@ -116,6 +117,7 @@ module Mongo
         raise(e) if attempt > Cluster::MAX_WRITE_RETRIES
         if e.write_retryable?
           log_retry(e)
+          sleep(cluster.read_retry_interval) if e.message.include?('node is recovering')
           cluster.scan!
           retry
         else
