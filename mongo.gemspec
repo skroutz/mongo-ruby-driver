@@ -4,7 +4,7 @@ require 'mongo/version'
 
 Gem::Specification.new do |s|
   s.name              = 'mongo'
-  s.version           = Mongo::VERSION
+  s.version           = Mongo::VERSION + '.4.skroutz'
   s.platform          = Gem::Platform::RUBY
 
   s.authors           = ['Tyler Brock', 'Emily Stolfo', 'Durran Jordan']
