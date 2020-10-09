@@ -250,7 +250,11 @@ module Mongo
             return server
           end
 
-          cluster.scan!(false)
+          if cluster.connected? && server_selection_diagnostic_message(cluster).include?('dead monitor')
+            cluster.reconnect!
+          else
+            cluster.scan!(false)
+          end
 
           time_remaining = deadline - Time.now
           if time_remaining > 0

@@ -75,10 +75,16 @@ describe 'Server selector' do
         end
       end
 
-      it 'raises NoServerAvailable with a message explaining the situation' do
+      it 'restarts the monitoring thread' do
+        result
+        alive_threads = client.cluster.servers.map{ |s| s.monitor.instance_variable_get('@thread').alive? }
+        expect(alive_threads).to all be
+      end
+
+      it 'does not raise NoServerAvailable due to dead monitor' do
         expect do
           result
-        end.to raise_error(Mongo::Error::NoServerAvailable, /The following servers have dead monitor threads/)
+        end.not_to raise_error(Mongo::Error::NoServerAvailable, /The following servers have dead monitor threads/)
       end
     end
   end

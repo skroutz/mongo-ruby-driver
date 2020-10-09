@@ -208,6 +208,7 @@ describe Mongo::ServerSelector do
         double('cluster').tap do |c|
           allow(c).to receive(:connected?).and_return(true)
           allow(c).to receive(:summary)
+          allow(c).to receive(:reconnect!)
           allow(c).to receive(:topology).and_return(topology)
           allow(c).to receive(:servers).and_return(servers)
           allow(c).to receive(:servers_list).and_return(servers)
