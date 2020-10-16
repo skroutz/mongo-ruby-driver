@@ -238,7 +238,7 @@ module Mongo
         loop do
           server = try_select_server(cluster)
 
-          if server
+          if server && server.connectable?
             unless cluster.topology.compatible?
               raise Error::UnsupportedFeatures, cluster.topology.compatibility_error.to_s
             end

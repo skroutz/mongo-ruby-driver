@@ -223,9 +223,13 @@ module Mongo
     # @return [ true, false ] If the server is connectable.
     #
     # @since 2.1.0
-    #
-    # @deprecated No longer necessary with Server Selection specification.
-    def connectable?; end
+    def connectable?
+      with_connection do |connection|
+        connection.ping
+      end
+    rescue
+      false
+    end
 
     # Disconnect the driver from this server.
     #

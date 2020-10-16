@@ -319,7 +319,11 @@ describe Mongo::ServerSelector do
     end
 
     context 'when topology is incompatible' do
-      let(:server) { make_server(:primary) }
+      let(:server) do
+        make_server(:primary).tap do |server|
+          allow(server).to receive(:connectable?).and_return(true)
+        end
+      end
 
       let(:cluster) do
         double('cluster').tap do |c|
@@ -373,7 +377,11 @@ describe Mongo::ServerSelector do
       end
 
       context 'unknown and mongos' do
-        let(:mongos) { make_server(:mongos, address: Mongo::Address.new('localhost')) }
+        let(:mongos) do
+          make_server(:mongos, address: Mongo::Address.new('localhost')).tap do |server|
+            allow(server).to receive(:connectable?).and_return(true)
+          end
+        end
         let(:unknown) { make_server(:unknown, address: Mongo::Address.new('localhost')) }
         let(:servers) { [unknown, mongos] }
         let(:selector) { described_class.primary }

@@ -319,6 +319,7 @@ describe 'Retryable writes integration tests' do
     end
 
     before do
+      expect(primary_socket).to receive(:do_write).exactly(:once).and_call_original
       expect(primary_socket).to receive(:do_write).exactly(:once).and_raise(Mongo::Error::SocketError)
     end
 
@@ -341,6 +342,7 @@ describe 'Retryable writes integration tests' do
     end
 
     before do
+      expect(primary_socket).to receive(:do_write).exactly(:once).and_call_original
       expect(primary_socket).to receive(:do_write).and_raise(Mongo::Error::SocketError)
     end
 

@@ -1,6 +1,7 @@
 require 'spec_helper'
 
 describe 'SDAM error handling' do
+  include PrimarySocket
   clean_slate_for_all
 
   after do
@@ -169,7 +170,9 @@ describe 'SDAM error handling' do
       max_server_version '4.2'
 
       let(:operation) do
-        expect_any_instance_of(Mongo::Socket).to receive(:read).and_raise(exception)
+        expect(primary_socket).to receive(:read).twice.and_call_original
+        expect(primary_socket).to receive(:read).and_raise(exception)
+
         expect do
           client.database.command(ping: 1)
         end.to raise_error(exception)
